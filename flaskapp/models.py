@@ -1,4 +1,5 @@
 import re
+from sqlalchemy.orm import backref
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from flaskapp.extensions import db
 
@@ -21,13 +22,41 @@ class ModelMixins(object):
 
 class AuthGroup(ModelMixins, db.Model):
     name = db.Column(db.String(64), index=True, nullable=False)
+    users = db.relationship("User", secondary="auth_group_map")
+
+class AuthGroupMap(ModelMixins, db.Model):
+    auth_group_id = db.Column(db.Integer, db.ForeignKey('auth_group.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    auth_group = db.relationship("AuthGroup", backref=backref("auth_group_map", cascade="all, delete-orphan" ))
+    user = db.relationship("User", backref=backref("auth_group_map", cascade="all, delete-orphan" ))
 
 
 class User(ModelMixins, db.Model):
     name = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(128), unique=True, index=True, nullable=False)
-    todos = db.relationship("todo", backref=db.backref("user"))
-    hobby = db.relationship("hobby", backref=db.backref("user", uselist=False))
+    
+    hobby_id = db.Column(
+        db.ForeignKey("hobby.id"),
+        nullable=False,
+        index=True,
+        info="취미",
+    )
+
+    hobby = db.relationship("Hobby", primaryjoin="user.hobby_id == hobby.id",
+        backref=backref("User", uselist=False))
+    
+    todo_id = db.Column(
+        db.ForeignKey("todo.id"),
+        nullable=False,
+        index=True,
+        info="할일",
+    )
+
+    todos = db.relationship("Todo", primaryjoin="user.todo_id == todo.id",
+        backref=backref("User"))
+    
+    auth_groups = db.relationship("AuthGroup", secondary="auth_group_map")
 
 
 class Hobby(ModelMixins, db.Model):
