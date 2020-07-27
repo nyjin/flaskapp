@@ -2,6 +2,10 @@ from flask import Flask
 
 from config import Config
 from flaskapp.extensions import db, migrate
+import logging
+
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 
 def create_app(config_obj=Config):
