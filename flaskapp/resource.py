@@ -23,10 +23,9 @@ class HobbyList(Resource):
         return schemas.hobbies_schema.dump(hobbies)
 
     def post(self):
-        data = json.loads(request.data.decode("utf-8"))
         session = db.session
         with session.begin_nested():
-            hobby = schemas.hobby_schema.load(data)
+            hobby = schemas.hobby_schema.load(request.json)
             session.add(hobby)
 
         return schemas.hobby_schema.dump(hobby), 201
@@ -38,11 +37,10 @@ class HobbyById(Resource):
         return schemas.hobby_schema.dump(hobby), 200
 
     def put(self, id: int):
-        data = json.loads(request.data.decode("utf-8"))
         session = db.session
         with session.begin_nested():
             hobby = session.query(models.Hobby).filter(models.Hobby.id == id).first()
-            schemas.hobby_schema.load(data, instance=hobby, partial=True)
+            schemas.hobby_schema.load(request.json, instance=hobby, partial=True)
 
         return schemas.hobby_schema.dump(hobby), 200
 
