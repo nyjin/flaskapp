@@ -1,9 +1,9 @@
 from flaskapp.models import *
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, SessionBase
 
 
 class TestData:
-    def __init__(self, session):
+    def __init__(self, session: SessionBase):
         self._session = session
 
         self._roh = User(name="Roh", email="z1@naver.com")
