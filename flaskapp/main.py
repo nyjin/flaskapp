@@ -1,7 +1,6 @@
 from flask import Flask
-
 from config import Config
-from flaskapp.extensions import db, migrate
+from flaskapp.extensions import db, migrate, ma
 import logging
 
 logging.basicConfig()
@@ -18,6 +17,7 @@ def create_app(config_obj=Config):
 def init_app(app):
     db.init_app(app)
     migrate.init_app(app, db)
+    ma.init_app(app)
 
     from flaskapp.resource import api_blueprint
 

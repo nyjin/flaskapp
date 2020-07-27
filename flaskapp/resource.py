@@ -1,27 +1,52 @@
-from flask_restful import Resource
+from typing import List
 
-from flask import Blueprint
+import json
 from .extensions import db
-from .models import Hobby
-from flask_restful import Api
+from . import models, schemas
+
+from flask_restful import Resource, reqparse, Api
+from flask import Blueprint, request
 
 api_blueprint = Blueprint("api", __name__)
 api = Api(api_blueprint)
 
 
-class UserList(Resource):
-    def get(self):
-        return "Hello world"
+# class UserList(Resource):
+#     def get(self):
+#         users = db.session.query(models.User).all()
+#         return schemas.users_schema.dump(users)
+
 
 class HobbyList(Resource):
     def get(self):
-        return "Hello world2"
+        hobbies = db.session.query(models.Hobby).all()
+        return schemas.hobbies_schema.dump(hobbies)
+
+    def post(self):
+        data = json.loads(request.data.decode("utf-8"))
+        session = db.session
+        with session.begin_nested():
+            hobby = schemas.hobby_schema.load(data)
+            session.add(hobby)
+
+        return schemas.hobby_schema.dump(hobby), 201
+
 
 class HobbyById(Resource):
-    def get(self, id):
-        return db.session.query(Hobby).get(id)
+    def get(self, id: int):
+        hobby = db.session.query(models.Hobby).filter(models.Hobby.id == id).first()
+        return schemas.hobby_schema.dump(hobby), 200
+
+    def put(self, id: int):
+        data = json.loads(request.data.decode("utf-8"))
+        session = db.session
+        with session.begin_nested():
+            hobby = session.query(models.Hobby).filter(models.Hobby.id == id).first()
+            schemas.hobby_schema.load(data, instance=hobby, partial=True)
+
+        return schemas.hobby_schema.dump(hobby), 200
 
 
-api.add_resource(UserList, "/users")
-api.add_resource(HobbyList, "/hobby")
-api.add_resource(HobbyById, "/hobby/<int:id>")
+# api.add_resource(UserList, "/users")
+api.add_resource(HobbyList, "/hobbies")
+api.add_resource(HobbyById, "/hobbies/<int:id>")

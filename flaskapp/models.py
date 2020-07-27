@@ -24,18 +24,25 @@ class ModelMixins(object):
 
 class AuthGroup(ModelMixins, db.Model):
     name = db.Column(db.String(64), index=True, nullable=False)
-
-    users = db.relationship("User", secondary="auth_group_map")
+    users = db.relationship("User", secondary="auth_group_map", backref=backref("user"))
 
 
 class User(ModelMixins, db.Model):
     name = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(128), unique=True, index=True, nullable=False)
     hobby_id = db.Column(
-        db.ForeignKey("hobby.id"), nullable=True, index=True, info="취미",
+        db.ForeignKey("hobby.id"), nullable=True, index=True, info="취미"
     )
 
-    hobby = db.relationship("Hobby", foreign_keys=hobby_id, uselist=False)
+    hobby = db.relationship(
+        "Hobby", lazy="joined", foreign_keys=hobby_id, uselist=False
+    )
+
+    auth_groups = db.relationship(
+        "AuthGroup", secondary="auth_group_map", backref=backref("auth_group")
+    )
+
+    # User 테이블에 todos property를 선언하는 방법
     todos = db.relationship("Todo", lazy="dynamic", uselist=True)
 
 
@@ -67,3 +74,6 @@ class Todo(ModelMixins, db.Model):
     )
 
     user = db.relationship("User", primaryjoin=user_id == User.id)
+
+    # User 테이블에 todos property를 추가하는 방법
+    # user = db.relationship("User", primaryjoin=user_id == User.id, backref='todos')

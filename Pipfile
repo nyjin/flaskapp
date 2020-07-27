@@ -15,6 +15,9 @@ flask-dotenv = "*"
 python-dotenv = "*"
 flask-migrate = "*"
 flask-script = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+stringcase = "*"
 
 [requires]
 python_version = "3.8"
