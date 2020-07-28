@@ -18,6 +18,7 @@ flask-script = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 stringcase = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.8"
