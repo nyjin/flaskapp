@@ -59,7 +59,7 @@ class AuthGroupMap(ModelMixins, db.Model):
         "AuthGroup",
         primaryjoin=auth_group_id == AuthGroup.id,
         backref=backref("user_map", cascade="all, delete-orphan"),
-    )est
+    )
     user = db.relationship(
         "User",
         primaryjoin=user_id == User.id,
