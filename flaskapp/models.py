@@ -28,11 +28,15 @@ class AuthGroup(ModelMixins, db.Model):
 
 
 class User(ModelMixins, db.Model):
-    name = db.Column(db.String(64), index=True, nullable=False)
+    # name = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(128), unique=True, index=True, nullable=False)
     hobby_id = db.Column(
         db.ForeignKey("hobby.id"), nullable=True, index=True, info="취미"
     )
+
+    first_name = db.Column(db.String(64), index=True, nullable=False)
+    middle_name = db.Column(db.String(64), index=True, nullable=False)
+    last_name = db.Column(db.String(64), index=True, nullable=False)
 
     hobby = db.relationship(
         "Hobby", lazy="joined", foreign_keys=hobby_id, uselist=False
