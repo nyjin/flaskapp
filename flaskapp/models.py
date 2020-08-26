@@ -28,26 +28,28 @@ class AuthGroup(ModelMixins, db.Model):
 
 
 class User(ModelMixins, db.Model):
-    # name = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(128), unique=True, index=True, nullable=False)
-    hobby_id = db.Column(
-        db.ForeignKey("hobby.id"), nullable=True, index=True, info="취미"
-    )
 
     first_name = db.Column(db.String(64), index=True, nullable=False)
     middle_name = db.Column(db.String(64), index=True, nullable=False)
     last_name = db.Column(db.String(64), index=True, nullable=False)
-
+    
+    # 1:1
     hobby = db.relationship(
         "Hobby", lazy="joined", foreign_keys=hobby_id, uselist=False
     )
+    hobby_id = db.Column(
+        db.ForeignKey("hobby.id"), nullable=True, index=True, info="취미"
+    )
 
+    # 1:*
+    # User 테이블에 todos property를 선언하는 방법
+    todos = db.relationship("Todo", lazy="dynamic", uselist=True)
+
+    # *:*
     auth_groups = db.relationship(
         "AuthGroup", secondary="auth_group_map", backref=backref("auth_group")
     )
-
-    # User 테이블에 todos property를 선언하는 방법
-    todos = db.relationship("Todo", lazy="dynamic", uselist=True)
 
 
 class AuthGroupMap(ModelMixins, db.Model):

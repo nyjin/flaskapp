@@ -13,7 +13,7 @@ class TestData:
 
     def _add_users_with_hobbies(self):
         h1 = Hobby(name="watch TV")
-        h2 = Hobby(name="readint books")
+        h2 = Hobby(name="reading books")
         h3 = Hobby(name="swimming")
         h4 = Hobby(name="dance")
 
@@ -36,8 +36,8 @@ class TestData:
         self._session.add_all([todo1, todo2, todo3, todo4])
 
     def _add_users_with_groups(self):
-        g1 = AuthGroup(name="manager", users=[self._roh])
-        g2 = AuthGroup(name="employee", users=[self._park])
+        g1 = AuthGroup(name="manager")
+        g2 = AuthGroup(name="employee")
 
         m1 = AuthGroupMap(auth_group=g1, user=self._roh, used=True)
         m2 = AuthGroupMap(auth_group=g2, user=self._park, used=False)

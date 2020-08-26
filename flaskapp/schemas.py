@@ -79,6 +79,6 @@ class UserSchema(ma.SQLAlchemySchema):
         model = models.User
 
 
-hobby_schema = HobbySchema()
+hdaobby_schema = HobbySchema()
 hobbies_schema = HobbySchema(many=True)
 # users_schema = UserSchema(many=True)
